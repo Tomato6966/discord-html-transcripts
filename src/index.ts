@@ -8,10 +8,11 @@ import {
 } from './types';
 
 // version check
-if (version.split('.')[0] !== '14') {
+if (version.split('.')[0] !== '13') {
   console.error(
-    `[discord-html-transcripts] Versions v3.x.x of discord-html-transcripts are only compatible with js v14.x.x, and you are using v${version}.` +
-      `    Please install discord-html-transcripts v2.x.x using "npm install discord-html-transcripts@^2".`
+    `[discord-html-transcripts] Custom Version of Tomato is only compatible with v13, you have v${version}.` +
+    `    Please install discord-html-transcripts v2.x.x --> v13 "npm install discord-html-transcripts@^2".` +
+    `    Please install discord-html-transcripts v3.x.x --> v14 "npm install discord-html-transcripts@^3".`
   );
   process.exit(1);
 }

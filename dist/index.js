@@ -22,9 +22,12 @@ const discord_js_1 = require("discord.js");
 const generator_1 = __importDefault(require("./generator"));
 const types_1 = require("./types");
 // version check
-if (discord_js_1.version.split('.')[0] !== '14') {
-    console.error(`[discord-html-transcripts] Versions v3.x.x of discord-html-transcripts are only compatible with js v14.x.x, and you are using v${discord_js_1.version}.` +
-        `    Please install discord-html-transcripts v2.x.x using "npm install discord-html-transcripts@^2".`);
+if (discord_js_1.version.split('.')[0] !== '13') {
+    console.error(
+      `[discord-html-transcripts] Custom Version of Tomato is only compatible with v13, you have v${discord_js_1.version}.` +
+      `    Please install discord-html-transcripts v2.x.x --> v13 "npm install discord-html-transcripts@^2".` +
+      `    Please install discord-html-transcripts v3.x.x --> v14 "npm install discord-html-transcripts@^3".`
+    );
     process.exit(1);
 }
 /**
