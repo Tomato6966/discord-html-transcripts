@@ -1,5 +1,5 @@
 import { DiscordReply } from '@derockdev/discord-components-react';
-import { type Message, UserFlags } from 'discord.js';
+import { type Message } from 'discord.js';
 import type { RenderMessageContext } from '..';
 import React from 'react';
 import renderContent, { RenderType } from './content';
