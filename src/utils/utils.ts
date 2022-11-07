@@ -1,6 +1,12 @@
-import type { APIMessageComponentEmoji, Emoji } from 'discord.js';
+import type { Emoji } from 'discord.js';
 import { request } from 'undici';
 import twemoji from 'twemoji';
+
+interface RawEmojiData {
+  id: string,
+  name?: string,
+  animated?: boolean,
+}
 
 export function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) return '0 Bytes';
@@ -14,7 +20,7 @@ export function formatBytes(bytes: number, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-export function parseDiscordEmoji(emoji: Emoji | APIMessageComponentEmoji) {
+export function parseDiscordEmoji(emoji: Emoji | RawEmojiData) {
   if (emoji.id) {
     return `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? 'gif' : 'png'}`;
   }

@@ -1,9 +1,9 @@
 import { DiscordActionRow, DiscordButton } from '@derockdev/discord-components-react';
-import { ButtonStyle, ComponentType, type MessageActionRowComponent, type ActionRow } from 'discord.js';
+import { MessageButtonStyle, type MessageActionRowComponent, type MessageActionRow } from 'discord.js';
 import React from 'react';
 import { parseDiscordEmoji } from '../../utils/utils';
 
-export default function renderComponentRow(row: ActionRow<MessageActionRowComponent>, id: number) {
+export default function renderComponentRow(row: MessageActionRow<MessageActionRowComponent>, id: number) {
   return (
     <DiscordActionRow key={id}>
       {row.components.map((component, id) => renderComponent(component, id))}
@@ -12,23 +12,23 @@ export default function renderComponentRow(row: ActionRow<MessageActionRowCompon
 }
 
 const ButtonStyleMapping = {
-  [ButtonStyle.Primary]: 'primary',
-  [ButtonStyle.Secondary]: 'secondary',
-  [ButtonStyle.Success]: 'success',
-  [ButtonStyle.Danger]: 'destructive',
-  [ButtonStyle.Link]: 'secondary',
+  ["PRIMARY"]: 'primary',
+  ["SECONDARY"]: 'secondary',
+  ["SUCCESS"]: 'success',
+  ["DANGER"]: 'destructive',
+  ["LINK"]: 'secondary',
 } as const;
 
 export function renderComponent(component: MessageActionRowComponent, id: number) {
-  if (component.type === ComponentType.Button) {
+  if (component.type === "BUTTON") {
     return (
       <DiscordButton
-        key={id}
-        type={ButtonStyleMapping[component.style]}
-        url={component.url ?? undefined}
+        key={id} // @ts-ignore
+        type={ButtonStyleMapping[String(component.style)]} // @ts-ignore
+        url={component.url ?? undefined} // @ts-ignore
         emoji={component.emoji ? parseDiscordEmoji(component.emoji) : undefined}
-      >
-        {component.label}
+      // @ts-ignore
+      > {component.label} 
       </DiscordButton>
     );
   }

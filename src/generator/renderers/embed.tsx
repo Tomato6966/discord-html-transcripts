@@ -5,7 +5,7 @@ import {
   DiscordEmbedFields,
   DiscordEmbedFooter,
 } from '@derockdev/discord-components-react';
-import type { Embed, Message } from 'discord.js';
+import type { MessageEmbed, Message } from 'discord.js';
 import React from 'react';
 import type { RenderMessageContext } from '..';
 import { calculateInlineIndex } from '../../utils/embeds';
@@ -16,7 +16,7 @@ type RenderEmbedContext = RenderMessageContext & {
   message: Message;
 };
 
-export async function renderEmbed(embed: Embed, context: RenderEmbedContext) {
+export async function renderEmbed(embed: MessageEmbed, context: RenderEmbedContext) {
   return (
     <DiscordEmbed
       embedTitle={embed.title ?? undefined}
@@ -59,7 +59,7 @@ export async function renderEmbed(embed: Embed, context: RenderEmbedContext) {
       {embed.footer && (
         <DiscordEmbedFooter
           slot="footer"
-          footerImage={embed.footer.proxyIconURL ?? embed.footer.iconURL}
+          footerImage={embed.footer.proxyIconURL ?? embed.footer.iconURL} // @ts-ignore
           timestamp={embed.timestamp ?? undefined}
         >
           {embed.footer.text}

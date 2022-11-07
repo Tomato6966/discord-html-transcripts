@@ -5,13 +5,13 @@ import { config } from 'dotenv';
 config();
 
 const client = new discord.Client({
-  intents: [discord.IntentsBitField.Flags.GuildMessages, discord.IntentsBitField.Flags.Guilds],
+  intents: [discord.Intents.FLAGS.GUILD_MESSAGES, discord.Intents.FLAGS.GUILDS],
 });
 
 client.on('ready', async () => {
   const channel = await client.channels.fetch(process.env.CHANNEL!);
 
-  if (!channel || !channel.isTextBased()) {
+  if (!channel || (!channel.isText() && !channel.isThread())) {
     console.error('Invalid channel provided.');
     process.exit(1);
   }

@@ -52,6 +52,6 @@ function buildProfile(member: GuildMember | null, author: User) {
     roleIcon: member?.roles.icon?.iconURL() ?? undefined,
     roleName: member?.roles.hoist?.name ?? undefined,
     bot: author.bot,
-    verified: author.flags?.has(UserFlags.VerifiedBot),
+    verified: author.flags?.toArray?.()?.includes?.("VERIFIED_BOT"),
   };
 }

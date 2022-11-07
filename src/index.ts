@@ -1,4 +1,4 @@
-import { AttachmentBuilder, version, Collection, type Channel, type Message, type TextBasedChannel } from 'discord.js';
+import { MessageAttachment, version, Collection, DMChannel, TextChannel, ThreadChannel, VoiceChannel, type Message, type TextBasedChannel, Awaitable } from 'discord.js';
 import renderMessages from './generator';
 import {
   ExportReturnType,
@@ -25,7 +25,7 @@ if (version.split('.')[0] !== '14') {
  */
 export async function generateFromMessages<T extends ExportReturnType = ExportReturnType.Attachment>(
   messages: Message[] | Collection<string, Message>,
-  channel: Channel,
+  channel: DMChannel | TextChannel | ThreadChannel | VoiceChannel,
   options: GenerateFromMessagesOptions<T> = {}
 ): Promise<ObjectType<T>> {
   // turn messages into an array
@@ -39,10 +39,9 @@ export async function generateFromMessages<T extends ExportReturnType = ExportRe
     channel,
     saveImages: options.saveImages ?? false,
     callbacks: {
-      resolveChannel: async (id) => channel.client.channels.fetch(id).catch(() => null),
+      resolveChannel: async (id) => channel.client.channels.fetch(id).catch(() => null) as Awaitable<DMChannel | TextChannel | ThreadChannel | VoiceChannel | null>,
       resolveUser: async (id) => channel.client.users.fetch(id).catch(() => null),
-      resolveRole: channel.isDMBased() ? () => null : async (id) => channel.guild?.roles.fetch(id).catch(() => null),
-
+      resolveRole: channel instanceof DMChannel ? () => null : async (id) => channel.guild?.roles.fetch(id).catch(() => null),
       ...(options.callbacks ?? {}),
     },
     poweredBy: options.poweredBy ?? true,
@@ -62,9 +61,7 @@ export async function generateFromMessages<T extends ExportReturnType = ExportRe
     return html as unknown as ObjectType<T>;
   }
 
-  return new AttachmentBuilder(Buffer.from(html), {
-    name: options.filename ?? `transcript-${channel.id}.html`,
-  }) as unknown as ObjectType<T>;
+  return new MessageAttachment(Buffer.from(html), options.filename ?? `transcript-${channel.id}.html`) as unknown as ObjectType<T>;
 }
 
 /**
@@ -78,7 +75,7 @@ export async function createTranscript<T extends ExportReturnType = ExportReturn
   options: CreateTranscriptOptions<T> = {}
 ): Promise<ObjectType<T>> {
   // validate type
-  if (!channel.isTextBased()) {
+  if (!channel.isText()) {
     // @ts-expect-error(2339): run-time check
     throw new TypeError(`Provided channel must be text-based, received ${channel.type}`);
   }
@@ -113,7 +110,7 @@ export async function createTranscript<T extends ExportReturnType = ExportReturn
   if (resolvedLimit < allMessages.length)
     allMessages = allMessages.slice(0, limit);
 
-  // generate the transcript
+  // @ts-ignore generate the transcript 
   return generateFromMessages<T>(allMessages.reverse(), channel, options);
 }
 

@@ -1,4 +1,4 @@
-import { ChannelType, type Awaitable, type Channel, type Message, type Role, type User } from 'discord.js';
+import { DMChannel, TextChannel, ThreadChannel, type Awaitable, VoiceChannel, type Message, type Role, type User, CategoryChannel } from 'discord.js';
 import ReactDOMServer from 'react-dom/server';
 import React from 'react';
 import { DiscordHeader, DiscordMessages } from '@derockdev/discord-components-react';
@@ -21,10 +21,10 @@ try {
 
 export type RenderMessageContext = {
   messages: Message[];
-  channel: Channel;
+  channel: DMChannel | TextChannel | ThreadChannel | VoiceChannel;
 
   callbacks: {
-    resolveChannel: (channelId: string) => Awaitable<Channel | null>;
+    resolveChannel: (channelId: string) => Awaitable<DMChannel | TextChannel | ThreadChannel | VoiceChannel | null>;
     resolveUser: (userId: string) => Awaitable<User | null>;
     resolveRole: (roleId: string) => Awaitable<Role | null>;
   };
@@ -53,23 +53,19 @@ export default async function renderMessages({ messages, channel, callbacks, ...
     <DiscordMessages style={{ minHeight: '100vh' }}>
       {/* header */}
       <DiscordHeader
-        guild={channel.isDMBased() ? 'Direct Messages' : channel.guild.name}
+        guild={channel instanceof DMChannel ? 'Direct Messages' : channel.guild.name}
         channel={
-          channel.isDMBased()
-            ? channel.type === ChannelType.DM
-              ? channel.recipient?.tag ?? 'Unknown Recipient'
-              : 'Unknown Recipient'
-            : channel.name
+          channel instanceof DMChannel ? channel.recipient?.tag ?? 'Unknown Recipient' : channel.name
         }
-        icon={channel.isDMBased() ? undefined : channel.guild.iconURL({ size: 128 }) ?? undefined}
+        icon={channel instanceof DMChannel ? undefined : channel.guild.iconURL({ size: 128 }) ?? undefined}
       >
         {channel.isThread()
           ? `Thread channel in ${channel.parent?.name ?? 'Unknown Channel'}`
-          : channel.isDMBased()
+          : channel instanceof DMChannel
           ? `Direct Messages`
-          : channel.isVoiceBased()
+          : channel instanceof VoiceChannel
           ? `Voice Text Channel for ${channel.name}`
-          : channel.type === ChannelType.GuildCategory
+          : channel instanceof CategoryChannel
           ? `Category Channel`
           : 'topic' in channel && channel.topic
           ? await renderContent(channel.topic, { messages, channel, callbacks, type: RenderType.REPLY, ...options })
@@ -106,15 +102,15 @@ export default async function renderMessages({ messages, channel, callbacks, ...
           type="image/png"
           href={
             options.favicon === 'guild'
-              ? channel.isDMBased()
+              ? channel instanceof DMChannel
                 ? undefined
-                : channel.guild.iconURL({ size: 16, extension: 'png' }) ?? undefined
+                : channel.guild.iconURL({ size: 16, format: 'png' }) ?? undefined
               : options.favicon
           }
         />
 
         {/* title */}
-        <title>{channel.isDMBased() ? 'Direct Messages' : channel.name}</title>
+        <title>{channel instanceof DMChannel ? 'Direct Messages' : channel.name}</title>
 
         {/* profiles */}
         <script

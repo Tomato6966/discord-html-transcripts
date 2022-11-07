@@ -1,4 +1,4 @@
-import type { AttachmentBuilder } from 'discord.js';
+import type { MessageAttachment } from 'discord.js';
 import type { RenderMessageContext } from './generator';
 
 export type AttachmentTypes = 'audio' | 'video' | 'image' | 'file';
@@ -13,7 +13,7 @@ export type ObjectType<T extends ExportReturnType> = T extends ExportReturnType.
   ? Buffer
   : T extends ExportReturnType.String
   ? string
-  : AttachmentBuilder;
+  : MessageAttachment;
 
 export type GenerateFromMessagesOptions<T extends ExportReturnType> = Partial<{
   /**

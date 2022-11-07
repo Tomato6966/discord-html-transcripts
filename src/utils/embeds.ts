@@ -1,4 +1,4 @@
-import type { APIEmbedField } from 'discord.js';
+import type { EmbedFieldData } from 'discord.js';
 
 export const calculateAmountOfTrue = (array: boolean[]) => {
   // get the amount of true values before endIndex, stopping at the first false value
@@ -11,7 +11,7 @@ export const calculateAmountOfTrue = (array: boolean[]) => {
   return array.length - 1;
 };
 
-export function calculateInlineIndex(fields: APIEmbedField[], currentFieldIndex: number) {
+export function calculateInlineIndex(fields: EmbedFieldData[], currentFieldIndex: number) {
   // get the amount of inline fields before the current field without gaps
   const inlineFieldsBefore = fields.slice(0, currentFieldIndex).map((e) => e.inline ?? false);
 

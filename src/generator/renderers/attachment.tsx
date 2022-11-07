@@ -1,6 +1,6 @@
 import { DiscordAttachment, DiscordAttachments } from '@derockdev/discord-components-react';
 import React from 'react';
-import type { Attachment, Message } from 'discord.js';
+import type { MessageAttachment, Message } from 'discord.js';
 import type { RenderMessageContext } from '..';
 import type { AttachmentTypes } from '../../types';
 import { downloadImageToDataURL, formatBytes } from '../../utils/utils';
@@ -16,13 +16,13 @@ export default async function renderAttachments(message: Message, context: Rende
 }
 
 // "audio" | "video" | "image" | "file"
-function getAttachmentType(attachment: Attachment): AttachmentTypes {
+function getAttachmentType(attachment: MessageAttachment): AttachmentTypes {
   const type = attachment.contentType?.split('/')?.[0] ?? 'unknown';
   if (['audio', 'video', 'image'].includes(type)) return type as AttachmentTypes;
   return 'file';
 }
 
-export async function renderAttachment(attachment: Attachment, context: RenderMessageContext) {
+export async function renderAttachment(attachment: MessageAttachment, context: RenderMessageContext) {
   let url = attachment.url;
   const name = attachment.name;
   const width = attachment.width;

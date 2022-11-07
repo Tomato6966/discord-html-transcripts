@@ -5,15 +5,15 @@ import { parseDiscordEmoji } from '../../utils/utils';
 
 export default async function renderSystemMessage(message: Message) {
   switch (message.type) {
-    case MessageType.RecipientAdd:
-    case MessageType.UserJoin:
+    case "RECIPIENT_ADD":
+    case "GUILD_MEMBER_JOIN":
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="join">
           {JoinMessage(message.member, message.author)}
         </DiscordSystemMessage>
       );
 
-    case MessageType.ChannelPinnedMessage:
+    case "CHANNEL_PINNED_MESSAGE":
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="edit">
           <Highlight color={message.member?.roles.color?.hexColor}>{message.author.username}</Highlight> pinned{' '}
@@ -34,10 +34,10 @@ export default async function renderSystemMessage(message: Message) {
         </DiscordSystemMessage>
       );
 
-    case MessageType.GuildBoost:
-    case MessageType.GuildBoostTier1:
-    case MessageType.GuildBoostTier2:
-    case MessageType.GuildBoostTier3:
+    case "USER_PREMIUM_GUILD_SUBSCRIPTION":
+    case "USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1":
+    case "USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2":
+    case "USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3":
       return (
         <DiscordSystemMessage id={`m-${message.id}`} key={message.id} type="boost">
           <Highlight color={message.member?.roles.color?.hexColor}>{message.author.username}</Highlight> boosted the
@@ -45,7 +45,7 @@ export default async function renderSystemMessage(message: Message) {
         </DiscordSystemMessage>
       );
 
-    case MessageType.ThreadStarterMessage:
+    case "THREAD_STARTER_MESSAGE":
       return (
         <DiscordSystemMessage id={`ms-${message.id}`} key={message.id} type="thread">
           <Highlight color={message.member?.roles.color?.hexColor}>{message.author.username}</Highlight> started a

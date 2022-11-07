@@ -11,7 +11,7 @@ import {
   DiscordUnderlined,
 } from '@derockdev/discord-components-react';
 import parse, { type RuleTypesExtended } from 'discord-markdown-parser';
-import { ChannelType, type APIMessageComponentEmoji } from 'discord.js';
+import { DMChannel } from 'discord.js';
 import React, { Fragment, type ReactNode } from 'react';
 import type { ASTNode, SingleASTNode } from 'simple-markdown';
 import type { RenderMessageContext } from '../';
@@ -102,8 +102,8 @@ export async function renderASTNode(node: SingleASTNode, context: RenderContentC
       const channel = await context.callbacks.resolveChannel(id);
 
       return (
-        <DiscordMention type={channel ? (channel.isDMBased() ? 'channel' : getChannelType(channel.type)) : 'channel'}>
-          {channel ? (channel.isDMBased() ? 'DM Channel' : channel.name) : `<#${id}>`}
+        <DiscordMention type={channel ? (channel instanceof DMChannel ? 'channel' : getChannelType(channel.type)) : 'channel'}>
+          {channel ? (channel instanceof DMChannel ? 'DM Channel' : channel.name) : `<#${id}>`}
         </DiscordMention>
       );
     }
@@ -166,7 +166,7 @@ export async function renderASTNode(node: SingleASTNode, context: RenderContentC
       return (
         <DiscordCustomEmoji
           name={node.name}
-          url={parseDiscordEmoji(node as APIMessageComponentEmoji)}
+          url={parseDiscordEmoji(node as any)}
           embedEmoji={context.type === RenderType.EMBED}
           largeEmoji={context._internal?.largeEmojis}
         />
@@ -182,21 +182,19 @@ export async function renderASTNode(node: SingleASTNode, context: RenderContentC
   }
 }
 
-export function getChannelType(channelType: ChannelType): 'channel' | 'voice' | 'thread' | 'forum' {
+export function getChannelType(channelType:string): 'channel' | 'voice' | 'thread' | 'forum' {
   switch (channelType) {
-    case ChannelType.GuildCategory:
-    case ChannelType.GuildAnnouncement:
-    case ChannelType.GuildText:
+    case "GUILD_CATEGORY":
+    case "GUILD_NEWS":
+    case "GUILD_TEXT":
       return 'channel';
-    case ChannelType.GuildVoice:
-    case ChannelType.GuildStageVoice:
+    case "GUILD_VOICE":
+    case "GUILD_STAGE_VOICE":
       return 'voice';
-    case ChannelType.PublicThread:
-    case ChannelType.PrivateThread:
-    case ChannelType.AnnouncementThread:
+    case "GUILD_NEWS_THREAD":
+    case "GUILD_PUBLIC_THREAD":
+    case "GUILD_PRIVATE_THREAD":
       return 'thread';
-    case ChannelType.GuildForum:
-      return 'forum';
     default:
       return 'channel';
   }
